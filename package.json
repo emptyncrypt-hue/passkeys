@@ -15,7 +15,9 @@
     "postinstall": "npm run build:frontend",
     "build:frontend": "cd passkey-frontend && npm ci && npm run build",
     "start": "node index.js",
-    "test": "node --test tests/*.test.js"
+    "test": "node --test tests/*.test.js",
+    "acceptance:verify": "node acceptance/verify-evidence.js",
+    "acceptance:release": "node acceptance/verify-evidence.js --release"
   },
   "keywords": [],
   "author": "",

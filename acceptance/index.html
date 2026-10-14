@@ -1,0 +1,33 @@
+<!doctype html>
+<html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Physical-device passkey acceptance · DRAFT evidence</title>
+<style>
+body{font-family:system-ui,sans-serif;margin:2rem auto;padding:0 1.2rem;max-width:58rem;line-height:1.5;color:#16202d}
+fieldset{border:1px solid #adb5bd;border-radius:.4rem;margin:1rem 0;padding:1rem}label{display:block;margin:.5rem 0}input,select,button{font:inherit;padding:.35rem;margin:.2rem}input[type=text]{width:min(95%,35rem)}button{cursor:pointer}table{border-collapse:collapse;width:100%}th,td{border-bottom:1px solid #ccc;text-align:left;padding:.6rem}td:last-child{white-space:nowrap}.PASS{color:#12612b}.FAIL{color:#a00909}.NOT_RUN{color:#555}#message{min-height:2.5rem}code{word-break:break-all}small{color:#4c5869}
+</style></head><body>
+<h1>Real-device passkey acceptance</h1>
+<p><strong>Physical device only.</strong> Perform each WebAuthn operation with a real platform authenticator or hardware security key. DevTools virtual authenticators and CI emulation <strong>do not qualify</strong>. This suite records browser-observed HTTP outcomes plus explicit operator attestations. It does not cryptographically prove hardware provenance.</p>
+<p><strong>Staging only.</strong> The harness creates a disposable account. Use an isolated HTTPS origin on mobile devices or <code>localhost</code> on a desktop. Do not use personal or production accounts. Raw assertions stay in memory only and are never included in exported evidence.</p>
+<fieldset><legend>Device and tester metadata — required for acceptance</legend>
+<label>Tester alias <input id="tester" type="text" maxlength="80" placeholder="qa-operator-01"></label>
+<label>Device class <select id="deviceClass"><option value="">Select</option><option value="mobile">Mobile/tablet</option><option value="desktop">Desktop/laptop</option><option value="security-key">External hardware key (host device)</option></select></label>
+<label>Device model <input id="model" type="text" maxlength="100" placeholder="iPhone 16 / Pixel 9 / YubiKey 5"></label>
+<label>OS and version <input id="os" type="text" maxlength="100" placeholder="iOS 27 / Android / Windows / macOS"></label>
+<label>Browser and version <input id="browser" type="text" maxlength="100" placeholder="Safari / Chrome / Edge"></label>
+<label>Authenticator used <select id="authenticator"><option value="">Select</option><option>Platform passkey</option><option>Roaming hardware security key</option><option>Synced passkey on real device</option></select></label>
+<label><input type="checkbox" id="realDevice"> I personally performed these steps using a physical authenticator; no virtual/simulated authenticator, API mock, or delegated automation.</label>
+</fieldset>
+<p>Disposable username: <strong id="username"></strong>. Do not change or reuse this account during the run.</p>
+<p id="message" role="status" aria-live="polite"></p>
+<table><thead><tr><th>ID</th><th>Requirement</th><th>Outcome</th><th>Run</th></tr></thead><tbody id="cases"></tbody></table>
+<fieldset><legend>Operator gates</legend>
+<label><input type="checkbox" id="reloadConfirmed"> I refreshed this browser tab <em>after LOGIN and REPLAY</em> before pressing SESSION.</label>
+<label><input type="checkbox" id="cancelObserved"> I personally saw and cancelled an authenticator prompt; no credential was produced.</label>
+<label><input type="checkbox" id="backendRestarted"> I restarted the Node backend (without deleting <code>AUTH_STORE_PATH</code>) after LOGOUT and CANCEL; the browser uses the same RP ID and origin.</label>
+<label><input type="checkbox" id="uvObserved"> I observed and completed the device's biometric or local PIN/user-verification prompt during successful passkey authentication.</label>
+</fieldset>
+<p><button id="export">Export JSON evidence</button> <button id="reset">Reset this runner (not server credentials)</button></p>
+<p id="verdict" aria-live="polite"></p>
+<p><small>For a PASS verdict, every required case must pass and the real-device attestation must be checked. Do not substitute this report for independent attestation or device-trust evaluation. The evidence validator checks completeness and file integrity, not device authenticity.</small></p>
+<script src="/acceptance/protocol.js"></script><script src="/acceptance/runner.js"></script>
+</body></html>

@@ -32,6 +32,19 @@ app.disable('x-powered-by');
 app.use(express.json({ limit: '64kb' }));
 app.use(express.static(path.join(__dirname, 'passkey-frontend/dist/passkey-frontend/browser')));
 
+// Real-device acceptance UI: explicitly enabled in disposable staging only.
+// Never expose the evidence validator or local acceptance files through static serving.
+if (process.env.APP_ENABLE_ACCEPTANCE === '1') {
+  for (const [url, file] of [
+    ['/acceptance', 'index.html'],
+    ['/acceptance/protocol.js', 'protocol.js'],
+    ['/acceptance/runner.js', 'runner.js'],
+  ]) {
+    app.get(url, (_req, res) => res.sendFile(path.join(__dirname, 'acceptance', file)));
+  }
+}
+
+
 // Browser writes must be same-origin. Wildcard CORS intentionally removed.
 app.use((req, res, next) => {
   if (req.method === 'POST') {

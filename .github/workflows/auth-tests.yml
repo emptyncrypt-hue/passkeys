@@ -6,6 +6,7 @@ on:
       - 'security.js'
       - 'storage.js'
       - 'tests/**'
+      - 'acceptance/**'
       - 'passkey-frontend/**'
       - 'package.json'
       - 'package-lock.json'

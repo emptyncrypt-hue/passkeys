@@ -33,3 +33,11 @@ Node unit tests cover low-level storage and challenge/session behavior. Real bro
 
 **Important:** The fix protects existing usernames from overwrite; it does not establish trusted identity ownership for a new username, nor implement enterprise SSO/OIDC/GCP federation or Dune-Sub control-plane identity.
 
+
+## Physical-device passkey acceptance
+
+A browser-native WebAuthn acceptance runner is included under [acceptance/README.md](acceptance/README.md). It uses real `navigator.credentials.create/get` calls and exports sanitized, integrity-hashed, **operator-attested** JSON evidence; it never substitutes a virtual authenticator for hardware.
+
+On an isolated HTTPS staging deployment, set `APP_ENABLE_ACCEPTANCE=1` and open `/acceptance` on the real phone, laptop or security-key host. The runner is disabled by default. Execute all required scenarios in order (registration, duplicate enrollment, login, replay rejection, cookie session after browser reload, logout, user-cancelled authenticator request, server restart persistence, and observed biometric/PIN user verification).
+
+Validate exports locally with `node acceptance/verify-evidence.js evidence.json`. Run the release diversity gate with `node acceptance/verify-evidence.js --release mobile.json desktop.json`. CI tests conversion/evidence logic but **cannot claim physical-device PASS**. Do not mark a release ready based on CI alone.
