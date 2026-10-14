@@ -1,7 +1,7 @@
 {
   "name": "passkeys-integration",
   "version": "1.0.0",
-  "description": "",
+  "description": "WebAuthn passkeys demo",
   "main": "index.js",
   "dependencies": {
     "@simplewebauthn/server": "^10.0.0",
@@ -12,8 +12,12 @@
     "express": "^4.19.2"
   },
   "scripts": {
-    "postinstall": "cd passkey-frontend && npm i && npm run build",
-    "start": "node index.js"
+    "postinstall": "npm run build:frontend",
+    "build:frontend": "cd passkey-frontend && npm ci && npm run build",
+    "start": "node index.js",
+    "test": "node --test tests/*.test.js",
+    "acceptance:verify": "node acceptance/verify-evidence.js",
+    "acceptance:release": "node acceptance/verify-evidence.js --release"
   },
   "keywords": [],
   "author": "",
